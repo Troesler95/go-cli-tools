@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+
+tasks:
+  build-ls:
+    cmds:
+      - go build -o bin/ls cmd/ls/*.go
+  start:
+    platforms: [linux]
+    deps: [build-ls]
+    # TODO: add ability to pass task cli input to command below
+    cmds:
+      - $(go env GOPATH)/bin/CompileDaemon -build 'go mod tidy && go build -o bin/ls cmd/ls/main.go' -command './bin/ls' -log-prefix=false
+  install:
+    cmds:
+      - go install github.com/githubnemo/CompileDaemon@latest

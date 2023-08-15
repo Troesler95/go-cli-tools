@@ -3,8 +3,8 @@ package goclitools
 import "fmt"
 
 // a terminal text output color
-type FgColor = int
-type BgColor = int
+type FgColor int
+type BgColor int
 
 const resetFormatting string = "\033[0m"
 
@@ -22,6 +22,7 @@ const (
 	FgDefault
 )
 
+// enumerates possible background text ouput colors
 const (
 	BgBlack BgColor = iota + 40
 	BgRed
@@ -37,13 +38,16 @@ const (
 
 type TextModifier uint32
 
+// enumerates possible text modifiers
 const (
-	DefaultText   TextModifier = 0
+	DefaultText TextModifier = 0
+	// WARN: may not be fully supported on all consoles
 	ItalicizeText TextModifier = 1 << iota
 	BoldText
 	UnderlineText
 )
 
+// a struct defining an output color formatting to the console
 type Color struct {
 	Foreground FgColor
 	Background BgColor
@@ -52,6 +56,7 @@ type Color struct {
 	underline  bool
 }
 
+// return a new color struct with the given fields
 func NewColor(fgColor FgColor, bgColor BgColor, modifiers TextModifier) Color {
 	return Color{
 		Foreground: fgColor,
@@ -62,6 +67,7 @@ func NewColor(fgColor FgColor, bgColor BgColor, modifiers TextModifier) Color {
 	}
 }
 
+// return a new color object with default formatting values: FgDefault, BgDefault, and DefaultText
 func NewDefaultColor() Color {
 	return NewColor(FgDefault, BgDefault, DefaultText)
 }
@@ -89,6 +95,7 @@ func (c *Color) AddTextModifiers(modifiers TextModifier) error {
 	return nil
 }
 
+// Clear the given text modifier(s) for this color formatter
 func (c *Color) ClearTextModifiers(modifiers TextModifier) error {
 	if modifiers == DefaultText {
 		return fmt.Errorf("unable to add text modifier. modifier DefaultText is not valid")
@@ -107,6 +114,7 @@ func (c *Color) ClearTextModifiers(modifiers TextModifier) error {
 	return nil
 }
 
+// clear all text modifiers from this color formatter
 func (c *Color) ClearAllTextModifiers() {
 	c.bold = false
 	c.italic = false
